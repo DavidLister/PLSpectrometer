@@ -6,6 +6,7 @@ import time
 from nidaqmx.constants import AcquisitionType
 from miscellaneous import sleep
 
+
 class Double():
 
     '''spectrometer class the this is where the signals are sent to and from the daq, it
