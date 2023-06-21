@@ -20,19 +20,19 @@ class scanWorker(QObject):
         self.step = step
         self.time = time
         self.abort = False
-        #add /Users back
-        absolute = 'C:/Users/Admin/Documents/PL/Data'
+        
+        # File path for saving data
+        home_dir = os.path.expanduser('~')
+        absolute = os.path.join(home_dir, 'Documents', 'PL', 'Data')
         dt_string = datetime.now().strftime("%Y %m %d")
-        dir = absolute + '/' + dt_string
-        if not os.path.isdir(dir):
-            os.makedirs(dir)
-
-        filepath = os.path.join(dir,filename)
+        directory = os.path.join(absolute, dt_string)
+    
+        os.makedirs(directory, exist_ok=True)
+    
+        filepath = os.path.join(directory, filename)
         print(filepath)
         self.filename = available_name(filepath)
         self.sample_id = sample_id
-
-
 
 
     def scan(self):
