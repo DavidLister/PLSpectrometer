@@ -181,7 +181,8 @@ class MainWindow(qtw.QMainWindow):
             #read data from the input boxes
             start = float(self.ui.scan_start_input.text())
             end = float(self.ui.scan_end_input.text())
-            step = float(self.ui.scan_step_input.text())
+            step_input = float(self.ui.scan_step_input.text())
+            step = round(step_input, 3) # Rounded to 0.001 nm to avoid systematic rounding error with pulse counts
             time = float(self.ui.count_time_input.text())
             filename = self.ui.file_name_input.text()
             sample_id = self.ui.sample_ID_input.text()
