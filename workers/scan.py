@@ -23,7 +23,8 @@ class scanWorker(QObject):
         
         # File path for saving data
         home_dir = os.path.expanduser('~')
-        absolute = os.path.join(home_dir, 'Documents', 'PL', 'Data')
+        # absolute = os.path.join(home_dir, 'Documents', 'PL', 'Data')  # Saves to data folder in documents
+        absolute = os.path.join(home_dir, 'Simon Fraser University (1sfu)', 'Simon Watkins - MOCVD-LAB', 'data', 'ZnO', 'PL', 'Data')  # Saves to OneDrive
         dt_string = datetime.now().strftime("%Y %m %d")
         directory = os.path.join(absolute, dt_string)
     
