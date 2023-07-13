@@ -142,7 +142,7 @@ class MainWindow(qtw.QMainWindow):
             self.ui.current_wavelength_lbl.adjustSize()
 
     #changes the status displayed in the top left corner
-    def change_status(self,status = 'Idle'):
+    def change_status(self, status = 'Idle'):
         self.ui.status_lbl.setText('Status: ' + status)
 
     #function that sets the buttons to enabled, to be called after
@@ -314,19 +314,26 @@ class MainWindow(qtw.QMainWindow):
 
     def recalibrate(self):
         try:
-            actual = float(self.ui.recalibrate_input.text())
+            literature = float(self.ui.literature_value_input.text())
+            measured = float(self.ui.measured_value_input.text())
+            current_position = float(self.ui.current_position_input.text())
+            offset = -(measured - literature)
+            corrected_position = current_position + offset
         except:
             print('the recalibrate input was invalid')
             return
 
         if self.ui.radioButton.isChecked():
-            self.double.recalibrate(actual)
+            self.double.recalibrate(corrected_position)
         else:
-            self.single.recalibrate(actual)
+            self.single.recalibrate(corrected_position)
+
+        self.ui.offset_lbl.setText("Offset (nm): " + offset)
+        self.ui.corrected_lbl.setText("Corrected Position (nm): " + corrected_position)
 
         current = self.ui.current_wavelength_lbl.text()
         keep = current[:current.find(':')+2]
-        new_string = keep + str(actual)
+        new_string = keep + str(corrected_position)
         self.ui.current_wavelength_lbl.setText(new_string)
         self.ui.current_wavelength_lbl.adjustSize()
 
