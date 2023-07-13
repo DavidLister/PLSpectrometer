@@ -3,7 +3,7 @@
 #IF YOU WISH TO CHANGE THE WAY DATA IS INPUTED THROUGH THE UI EDIT HERE OR USE
 #'spectrometer.ui' WITH QTDESIGNER AND COMPILE THE UI TO 'qt_designer.py'
 
-from qt_designer import Ui_MainWindow
+from qt_designer_new import Ui_MainWindow
 from PyQt5 import QtWidgets as qtw
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5 import QtCore as qtc
