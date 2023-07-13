@@ -43,8 +43,11 @@ class MainWindow(qtw.QMainWindow):
     def autoscale_lbls(self):
         self.ui.position_lbl.adjustSize()
         self.ui.current_wavelength_lbl.adjustSize()
-        self.ui.actual_value_lbl.adjustSize()
-        self.ui.recalibrate_lbl.adjustSize()
+        self.ui.literature_value_lbl.adjustSize()
+        self.ui.measured_value_lbl.adjustSize()
+        self.ui.current_position_lbl.adjustSize()
+        self.ui.offset_lbl.adjustSize()
+        self.ui.corrected_position_lbl.adjustSize()
         self.ui.move_spectrometer_lbl.adjustSize()
         self.ui.go_to_lbl.adjustSize()
         self.ui.scan_start_lbl.adjustSize()
