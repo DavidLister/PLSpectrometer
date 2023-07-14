@@ -321,7 +321,7 @@ class MainWindow(qtw.QMainWindow):
             measured = float(self.ui.measured_value_input.text())
             current_position = float(self.ui.current_position_input.text())
             offset = round(measured - literature, 3)
-            corrected_position = current_position - offset
+            corrected_position = round(current_position - offset, 3)
         except:
             print('the recalibrate input was invalid')
             error_message = "Recalibration cannot be performed due to invalid inputs. Please ensure there are numbers in each of the three input boxes."
