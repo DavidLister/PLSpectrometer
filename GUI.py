@@ -47,7 +47,7 @@ class MainWindow(qtw.QMainWindow):
         self.ui.measured_value_lbl.adjustSize()
         self.ui.current_position_lbl.adjustSize()
         self.ui.offset_lbl.adjustSize()
-        self.ui.corrected_position_lbl.adjustSize()
+        self.ui.corrected_lbl.adjustSize()
         self.ui.move_spectrometer_lbl.adjustSize()
         self.ui.go_to_lbl.adjustSize()
         self.ui.scan_start_lbl.adjustSize()
@@ -74,7 +74,7 @@ class MainWindow(qtw.QMainWindow):
     #makes and positions the optimize bar
     def add_optimize_bar(self):
         self.count_display = BarChartView(self.ui.centralwidget)
-        self.count_display.setGeometry(310,710,75,130)
+        self.count_display.setGeometry(310,810,75,130)
         self.count_display.refresh_stats(1030)
 
     #constructs and positions the tabs
@@ -320,7 +320,7 @@ class MainWindow(qtw.QMainWindow):
             literature = float(self.ui.literature_value_input.text())
             measured = float(self.ui.measured_value_input.text())
             current_position = float(self.ui.current_position_input.text())
-            offset = -(measured - literature)
+            offset = round(-(measured - literature), 3)
             corrected_position = current_position + offset
         except:
             print('the recalibrate input was invalid')
@@ -331,8 +331,10 @@ class MainWindow(qtw.QMainWindow):
         else:
             self.single.recalibrate(corrected_position)
 
-        self.ui.offset_lbl.setText("Offset (nm): " + offset)
-        self.ui.corrected_lbl.setText("Corrected Position (nm): " + corrected_position)
+        self.ui.offset_lbl.setText("Offset (nm): " + f"{offset}")
+        self.ui.corrected_lbl.setText("Corrected Position (nm): " + f"{corrected_position}")
+        self.ui.offset_lbl.adjustSize()
+        self.ui.corrected_lbl.adjustSize()
 
         current = self.ui.current_wavelength_lbl.text()
         keep = current[:current.find(':')+2]
