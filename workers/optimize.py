@@ -96,7 +96,7 @@ class spectrometer():
 
     def read(self,duration):
         time.sleep(duration)
-        return random.randint(self.start,self.end)  # Generate 
+        return random.randint(self.start,self.end)
 
 
 # Test
