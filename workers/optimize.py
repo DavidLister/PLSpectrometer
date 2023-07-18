@@ -62,9 +62,9 @@ class optimizeWorker(QObject):
             counts = self.spectrometer.read(interval)  # Read the counts for 0.15 of a second
             rate = counts/interval
             rate_ma = rate*rate_IIR_factor + rate_ma*(1 - rate_IIR_factor)
-            print(rate)
+            print(rate_ma)
             self.player.pause()
-            self.bar_update.emit(counts)  # Update the displayed value
+            self.bar_update.emit(rate_ma)  # Update the displayed value
             # Update the scale of our sound
             changeScale = True
             while changeScale:
