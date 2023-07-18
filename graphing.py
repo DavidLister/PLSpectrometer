@@ -1,3 +1,11 @@
+# graphing.py
+#
+# Graphs for GUI
+# Created by Elliot Wadge
+# Edited by Alistair Bevan
+# July 2023
+#
+
 import sys
 from typing import List
 from miscellaneous import find_minimum
@@ -12,7 +20,7 @@ from PyQt5.QtGui import QColor, QFont, QFontMetrics, QMouseEvent, QPainter, QPai
 from PyQt5.QtWidgets import QApplication, QGraphicsItem, QGraphicsScene, QGraphicsSceneMouseEvent, \
     QGraphicsSimpleTextItem, QGraphicsView, QStyleOptionGraphicsItem, QWidget
 
-#this is the little messageBox I didn't make this found it on the internet
+# This is the little messageBox (Elliot didn't make this, he found it on the internet)
 class Callout(QGraphicsItem):
 
     def __init__(self, parent: QChart):
