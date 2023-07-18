@@ -19,7 +19,7 @@ class optimizeWorker(QObject):
         #current path is the dir containing the file being run so the 'GUI' file in our case
         #if you're not hearing sound print this value and make sure its what you expect
         #this file is a tone that goes from 800Hz to 400Hz over 60 seconds
-        url = qtc.QUrl(qtc.QDir.currentPath()+'/workers/chirp.wav')
+        url = qtc.QUrl(qtc.QDir.currentPath()+'/Documents/PLSpectrometer/workers/chirp.wav')
         print(url)
         self.player.setVolume(70)
         self.set_file(url)
