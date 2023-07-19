@@ -65,7 +65,7 @@ class Callout(QGraphicsItem):
             point1 = QPointF()
             point2 = QPointF()
 
-            # establish the position of the anchor point in relation to self.m_rect
+            # Establish the position of the anchor point in relation to self.m_rect
             above = anchor.y() <= mr.top()
             above_center = mr.top() < anchor.y() <= mr.center().y()
             below_center = mr.center().y() < anchor.y() <= mr.bottom()
