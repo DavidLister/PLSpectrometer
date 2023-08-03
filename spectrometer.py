@@ -49,13 +49,11 @@ class Double():
         self.name = device
         self.frequency = 2000 # Frequency of pulses generated
 
-
     # Getter method which allows us to sanitize the inputs while keeping the syntax neat
     # Google @property for reasoning
     @property
     def position(self):
         return self._position
-
 
     # Setter method related to @property
     # IMPORTANT TO UNDERSTAND WHAT THIS DOES
@@ -68,16 +66,13 @@ class Double():
             raise ValueError("Spectrometer position must be between 0 and 1040.")
         return
 
-
     def open_shutter(self):
         # Set voltage to zero
         self.shutter.write(False)
 
-
     def close_shutter(self):
         # Set voltage to 5
         self.shutter.write(True)
-
 
     # Sets the direction of the move to be called before the move
     def set_direction(self, direction):
@@ -85,7 +80,6 @@ class Double():
             self.direction.write(True)
         else:
             self.direction.write(False)
-
 
     # Save the last position to a file
     def save(self):
@@ -98,7 +92,6 @@ class Double():
         else:
             print(self.position)
             print(f'Position of {self.name} saved')
-
 
     def move(self, distance, **kwargs):
         # Passing zero pulses to the channnel will cause an error
@@ -118,7 +111,6 @@ class Double():
             task.wait_until_done(timeout = math.inf) # Need to wait until done before continuing
         print('Done')
 
-
     def read(self, count_time):
         with nidaqmx.Task() as task:
              task.ci_channels.add_ci_count_edges_chan(self.name +"/ctr0") # Start a count channel
@@ -128,11 +120,9 @@ class Double():
              data = task.read() # Read the counts
         return data/count_time # Return the average count/s
 
-
     # Changes the stored position
     def recalibrate(self, wavelength):
         self.position = wavelength
-
 
     # Closes the tasks properly upon closing the application
     def close_channels(self):
@@ -185,13 +175,11 @@ class Single():
         self.name = device
         self.frequency = 2000 # Frequency of pulses generated
 
-
     # Getter method which allows us to sanitize the inputs while keeping the syntax neat
     # Google @property for reasoning
     @property
     def position(self):
         return self._position
-
 
     # Setter method related to @property
     # IMPORTANT TO UNDERSTAND WHAT THIS DOES
@@ -204,14 +192,12 @@ class Single():
             raise ValueError("Spectrometer position must be between 0 and 1550.")
         return
 
-
     # Sets the direction of the move to be called before the move
     def set_direction(self, direction):
         if direction > 0:
             self.direction.write(True)
         else:
             self.direction.write(False)
-
 
     def move(self, distance, **kwargs):
         # Passing zero pulses to the channnel will cause an error
@@ -231,7 +217,6 @@ class Single():
             task.wait_until_done(timeout = math.inf) # Need to wait until done before continuing
         print('Done')
 
-
     # Needs to have a read function for the scan
     def read(self, count_time):
         with nidaqmx.Task() as task:
@@ -242,11 +227,9 @@ class Single():
              data = task.read() # Read the counts
         return data/count_time # Return the average count/s
 
-
     # Changes the stored position
     def recalibrate(self, wavelength):
         self.position = wavelength
-
 
     # Saves the last position
     def save(self):
@@ -259,7 +242,6 @@ class Single():
         else:
             print(self.position)
             print(f'Position of {self.name} saved')
-
 
     # Closes the tasks properly upon closing the application
     def close_channels(self):
