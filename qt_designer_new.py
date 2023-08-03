@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'spectrometer.ui'
+# Form implementation generated from reading ui file 'spectrometer_new.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.9
 #
@@ -158,7 +158,7 @@ class Ui_MainWindow(object):
         self.offset_lbl.setFont(font)
         self.offset_lbl.setObjectName("offset_lbl")
         self.corrected_lbl = QtWidgets.QLabel(self.frame2)
-        self.corrected_lbl.setGeometry(QtCore.QRect(10, 140, 191, 16))
+        self.corrected_lbl.setGeometry(QtCore.QRect(10, 140, 251, 16))
         font = QtGui.QFont()
         font.setPointSize(10)
         font.setBold(False)
@@ -166,7 +166,7 @@ class Ui_MainWindow(object):
         self.corrected_lbl.setFont(font)
         self.corrected_lbl.setObjectName("corrected_lbl")
         self.current_position_lbl = QtWidgets.QLabel(self.frame2)
-        self.current_position_lbl.setGeometry(QtCore.QRect(10, 60, 171, 16))
+        self.current_position_lbl.setGeometry(QtCore.QRect(10, 60, 241, 16))
         font = QtGui.QFont()
         font.setPointSize(10)
         font.setBold(False)
@@ -479,11 +479,11 @@ class Ui_MainWindow(object):
         self.spect_select_lbl_2.setText(_translate("MainWindow", "Pulse Frequency (Hz): 2000 "))
         self.measured_value_lbl.setText(_translate("MainWindow", "Measured Value (nm)"))
         self.recalibrate_button.setText(_translate("MainWindow", "Recalibrate"))
-        self.literature_value_lbl.setText(_translate("MainWindow", "Literature Value (nm)"))
+        self.literature_value_lbl.setText(_translate("MainWindow", "Expected Value (nm)"))
         self.literature_value_input.setText(_translate("MainWindow", "365.016"))
         self.offset_lbl.setText(_translate("MainWindow", "Offset (nm):"))
-        self.corrected_lbl.setText(_translate("MainWindow", "Corrected Position (nm):"))
-        self.current_position_lbl.setText(_translate("MainWindow", "Current Position (nm)"))
+        self.corrected_lbl.setText(_translate("MainWindow", "Position After Correction (nm):"))
+        self.current_position_lbl.setText(_translate("MainWindow", "Position Before Correction (nm)"))
         self.go_to_lbl.setText(_translate("MainWindow", "Go to Value (nm)"))
         self.move_button.setText(_translate("MainWindow", "Move"))
         self.scan_start_lbl.setText(_translate("MainWindow", "Start (nm)"))
