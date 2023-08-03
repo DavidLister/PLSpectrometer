@@ -21,7 +21,7 @@ from PyQt5.QtWidgets import QApplication, QGraphicsItem, QGraphicsScene, QGraphi
     QGraphicsSimpleTextItem, QGraphicsView, QStyleOptionGraphicsItem, QWidget
 
 
-# This is the little messageBox (Not made by Elliot, he found it on the internet)
+# This is the little messageBox (not made by Elliot, he found it on the internet)
 class Callout(QGraphicsItem):
 
     def __init__(self, parent: QChart):
