@@ -16,10 +16,8 @@ import sys
 
 
 class optimizeWorker(QObject):
-
     bar_update = pyqtSignal(int)
     finished = pyqtSignal()
-
 
     def __init__(self,spectrometer):
         super().__init__()
@@ -33,7 +31,6 @@ class optimizeWorker(QObject):
         self.set_file(url)
         self.spectrometer = spectrometer
 
-
     # Set the target file for our audio
     def set_file(self, url):
         if url.scheme() == '':
@@ -43,7 +40,6 @@ class optimizeWorker(QObject):
         self.playlist.addMedia(content)
         self.playlist.setCurrentIndex(1)
         self.player.setPlaylist(self.playlist)
-
 
     def optimize(self):
         rate_ma = 0
@@ -61,7 +57,7 @@ class optimizeWorker(QObject):
             self.player.play()
             counts = self.spectrometer.read(interval)  # Read the counts for 0.15 of a second
             rate = counts/interval
-            rate_ma = rate*rate_IIR_factor + rate_ma*(1 - rate_IIR_factor)
+            rate_ma = int(rate*rate_IIR_factor + rate_ma*(1 - rate_IIR_factor))  # Take a moving average
             print(rate_ma)
             self.player.pause()
             self.bar_update.emit(rate_ma)  # Update the displayed value
@@ -82,17 +78,14 @@ class optimizeWorker(QObject):
         self.finished.emit()
 
 
-
 # Dummy class for testing (uses random number generator)
 class spectrometer():
-
 
     def __init__(self,start,end):
         self.x = 5
         self.start = start
         self.end = end
         pass
-
 
     def read(self,duration):
         time.sleep(duration)
