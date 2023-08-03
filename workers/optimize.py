@@ -19,7 +19,7 @@ class optimizeWorker(QObject):
     bar_update = pyqtSignal(int)
     finished = pyqtSignal()
 
-    def __init__(self,spectrometer):
+    def __init__(self, spectrometer):
         super().__init__()
         self.abort = False
         self.player = qtmm.QMediaPlayer()
@@ -81,7 +81,7 @@ class optimizeWorker(QObject):
 # Dummy class for testing (uses random number generator)
 class spectrometer():
 
-    def __init__(self,start,end):
+    def __init__(self, start, end):
         self.x = 5
         self.start = start
         self.end = end
@@ -89,15 +89,15 @@ class spectrometer():
 
     def read(self,duration):
         time.sleep(duration)
-        return random.randint(self.start,self.end)
+        return random.randint(self.start, self.end)
 
 
 # Test
 if __name__ == '__main__':
-    spec = spectrometer(0,1000)
+    spec = spectrometer(0, 1000)
     opt = optimizeWorker(spec)
     opt.optimize()
     # time.sleep(3)
-    # spec2 = spectrometer(100,200)
+    # spec2 = spectrometer(100, 200)
     # opt2 = optimizeWorker(spec2)
     # opt2.optimize()
