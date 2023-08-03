@@ -334,7 +334,7 @@ class MainWindow(qtw.QMainWindow):
             self.single.recalibrate(corrected_position)
 
         self.ui.offset_lbl.setText("Offset (nm): " + f"{offset}")
-        self.ui.corrected_lbl.setText("Corrected Position (nm): " + f"{corrected_position}")
+        self.ui.corrected_lbl.setText("Position After Correction (nm): " + f"{corrected_position}")
         self.ui.offset_lbl.adjustSize()
         self.ui.corrected_lbl.adjustSize()
 
