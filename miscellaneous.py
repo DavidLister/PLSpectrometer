@@ -6,8 +6,8 @@
 # June 2023
 #
 
-import time
 import os
+import time
 from datetime import datetime
 
 
@@ -17,6 +17,7 @@ def sleep(duration, get_now=time.perf_counter):
     end = now + duration
     while now < end:
         now = get_now()
+
 
 # Checks if filename is available to avoid overwriting data (returns best name)
 def available_name(filename):
@@ -42,12 +43,14 @@ def available_name(filename):
 
     return filename
 
+
 # Makes the file header, which takes f as in f = open(filename, 'w'), the sample ID and the count time
 def make_header(f, sample_id, time_avg):
     f.write(f'Sample ID:\t\t{sample_id}\n')
     dt_string = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
     f.write(f'Start Time:\t\t{dt_string}\n')
     f.write(f'Averaging Time (s):\t\t{time_avg}\n\n')
+
 
 # For finding the the minimum distance in cursors
 def find_minimum(xdata, ydata, cmpr_x, cmpr_y):
