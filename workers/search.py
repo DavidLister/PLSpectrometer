@@ -1,7 +1,7 @@
 # search.py
 #
-# Searches for and plots data
-# Created by Elliot Wadge
+# Searches for and plots data (used in the search tab in the main GUI)
+# Created by Elliot Wadge and Colton Lohn
 # Edited by Alistair Bevan
 # August 2023
 #
@@ -12,7 +12,7 @@ from PyQt5.QtCore import QObject, QThread, pyqtSignal
 
 
 class searchWorker(QObject):
-    sample = pyqtSignal(str)
+    sample = pyqtSignal(str, str)
     finished = pyqtSignal()
 
     def __init__(self, name, year):
@@ -25,30 +25,27 @@ class searchWorker(QObject):
         # absolute = os.path.join(home_dir, 'Documents', 'PL', 'Data')  # Searches in documents
         absolute = os.path.join(home_dir, 'Simon Fraser University (1sfu)', 'Simon Watkins - MOCVD-LAB', 'data', 'ZnO', 'PL', 'Data')  # Searches in OneDrive
 
-        i = self.name
-        j = self.year
-
-        if i == '':
+        if self.name == '':
             self.finished.emit()
             return
 
-        if j == '':
+        if self.year == '':
             print('Searching all...')
         else:
-            print('Searching ' + j + '...')
+            print('Searching ' + self.year + '...')
 
         found = False
 
         for subdir, dirs, files in os.walk(absolute):
-            if j in subdir:
+            if self.year in subdir:
                 for file in files:
                     f = open(os.path.join(subdir, file))
                     try:
                         line = f.readline()
                         f.close()
-                        if i in line or i in os.path.join(subdir, file):
+                        if self.name in line or self.name in os.path.join(subdir, file):
                             found = True
-                            self.sample.emit(os.path.join(subdir, file) + '\n' + line)
+                            self.sample.emit(os.path.join(subdir, file), line)  # Emits the file location and sample ID information
 
                     except UnicodeDecodeError:
                         continue
