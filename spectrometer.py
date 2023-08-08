@@ -18,7 +18,7 @@ class Double():
     '''The spectrometer class is where the signals are sent to and from the daq, and it
     also tracks the position of the spectrometer'''
 
-    def __init__(self,device, shutter_prt = '/port1/line1', direction_prt = '/port1/line3'):
+    def __init__(self, device, shutter_prt = '/port1/line1', direction_prt = '/port1/line3'):
         # Open file where last position is stored (not necessarily in the PLSpectrometer folder, it could be under the user)
         try:
             f = open(device + '_last_position.txt', 'r')
@@ -47,7 +47,7 @@ class Double():
             print(f'You will be unable to send commands to this daq: {device}\n')
 
         self.name = device
-        self.frequency = 2000 # Frequency of pulses generated
+        self.frequency = 2000  # Frequency of pulses generated
 
     # Getter method which allows us to sanitize the inputs while keeping the syntax neat
     # Google @property for reasoning
@@ -62,7 +62,7 @@ class Double():
         # Check these conditons before accepting a value when assigning a value to position
         if isinstance(wavelength, float) and wavelength >= 0 and wavelength < 1040:
             self._position = wavelength
-        else: # Will crash the program thus stopping the scan (can't stop a move)
+        else:  # Will crash the program thus stopping the scan (can't stop a move)
             raise ValueError("Spectrometer position must be between 0 and 1040.")
         return
 
@@ -189,7 +189,7 @@ class Single():
         if isinstance(wavelength, float) and wavelength >= 0 and wavelength < 1550:
             self._position = wavelength
         else: # Will crash the program thus stopping the scan (can't stop a move)
-            raise ValueError("Spectrometer position must be between 0 and 1550.")
+            raise ValueError("Spectrometer position must be between 0 and 1550 nm.")
         return
 
     # Sets the direction of the move to be called before the move
@@ -255,6 +255,7 @@ class Single():
             print('There was an error when closing the tasks')
         else:
             print('Spectrometer closed')
+
 
 
 if __name__ == '__main__':
