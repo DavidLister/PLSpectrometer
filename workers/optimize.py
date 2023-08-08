@@ -43,36 +43,38 @@ class optimizeWorker(QObject):
 
     def optimize(self):
         rate_ma = 0
-        rate_IIR_factor = 0.1
+        rate_IIR_factor = 0.1  # Infinite-impulse response factor for moving average
         maximum = 100
         changeScale = True
-        counts = 1
+        rate = 1
         interval = 0.15
         self.player.play()
+        print("Starting optimize")
         # Keep running until abort is hit
         while not self.abort:
             # Set the play position in the file in order to change the tone
-            playStart = int(60*1000*(counts/maximum))  # Higher counts equal higher frequency
+            playStart = int(60*1000*(rate/maximum))  # Higher rate equals higher frequency
             self.player.setPosition(playStart)
             self.player.play()
-            counts = self.spectrometer.read(interval)  # Read the counts for 0.15 of a second
-            rate = counts/interval
-            rate_ma = int(rate*rate_IIR_factor + rate_ma*(1 - rate_IIR_factor))  # Take a moving average
+            rate = self.spectrometer.read(interval)  # Reads the counts in the interval (note that spectrometer.read converts to counts/s)
+            rate_ma = int(rate*rate_IIR_factor + rate_ma*(1 - rate_IIR_factor))  # Takes a moving average
             print(rate_ma)
             self.player.pause()
             self.bar_update.emit(rate_ma)  # Update the displayed value
             # Update the scale of our sound
             changeScale = True
             while changeScale:
-                if counts >= maximum:
+                if rate >= maximum:
                     maximum *= 10
 
-                elif counts < maximum/10:
+                elif rate < maximum/10:
                     maximum /= 10
 
-                if (counts < maximum and counts >= maximum/10) or counts == 0:
+                if (rate < maximum and rate >= maximum/10) or rate == 0:
                     changeScale = False
+
         # Stop the player
+        print("Stopping optimize")
         self.player.stop()
         self.player.setPosition(0)
         self.finished.emit()
@@ -90,6 +92,7 @@ class spectrometer():
     def read(self,duration):
         time.sleep(duration)
         return random.randint(self.start, self.end)
+
 
 
 # Test
