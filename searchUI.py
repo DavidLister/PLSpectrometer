@@ -1,9 +1,16 @@
+# searchUI.py
+#
+# Used as search and plotting tab in the main GUI
+# Created by Elliot Wadge and Colton Lohn
+# Edited by Alistair Bevan
+# August 2023
+#
+
 from PyQt5 import QtCore, QtGui
 from PyQt5 import QtWidgets as qtw
 from PyQt5.QtCore import QThread
 from workers.search import searchWorker
 from workers.plot import plotWorker
-
 import sys
 from PyQt5.QtWidgets import (
     QApplication,
@@ -15,8 +22,10 @@ from PyQt5.QtWidgets import (
     QPushButton,
     QScrollArea,
     QHBoxLayout,
-    QProgressBar
+    QProgressBar,
+    QTextBrowser
 )
+
 
 class SearchUI(QWidget):
 
@@ -24,12 +33,12 @@ class SearchUI(QWidget):
         super().__init__()
 
         self.setWindowTitle('Plotting Spectra')
-        self.resize(600,600)
+        self.resize(600, 600)
 
-        #the outer most widget that will contain the other widgets
+        # This is the outer most widget which will contain the other widgets
         outerLayout = QVBoxLayout()
 
-        #the top layout this contains the search related inputs and buttons
+        # The top layout which contains the search related inputs and buttons
         self.searchLayout = QFormLayout()
         self.sampleNameInput = QLineEdit()
         self.sampleYearInput = QLineEdit()
@@ -38,14 +47,15 @@ class SearchUI(QWidget):
         self.searchLayout.addRow('Sample Year:', self.sampleYearInput)
         self.searchLayout.addRow(self.searchBtn)
 
-        # self.scroll = QScrollArea()
-        self.fileDisplay = qtw.QPlainTextEdit()
+        # self.scroll = QScrollArea()  # This seems to be unnecessary
+        self.fileDisplay = QTextBrowser()
+        self.fileDisplay.setOpenLinks(False)
 
-        #the botton Layout
+        # The botton Layout
         self.plotLayout = QFormLayout()
         self.filePathInput = QLineEdit()
         self.plotBtn = QPushButton('Plot')
-        self.plotLayout.addRow('Enter Path:',self.filePathInput)
+        self.plotLayout.addRow('Enter Path:', self.filePathInput)
         self.plotLayout.addRow(self.plotBtn)
 
         outerLayout.addLayout(self.searchLayout)
@@ -55,34 +65,33 @@ class SearchUI(QWidget):
         self.setLayout(outerLayout)
         self.connect_btns()
 
-
     def connect_btns(self):
         self.searchBtn.clicked.connect(self.search)
         self.plotBtn.clicked.connect(self.plot)
+        self.fileDisplay.anchorClicked.connect(self.plot)
 
     def search(self):
-        #get the sample name and year
+        # Get the sample name and year from the input boxes
         sampleName = self.sampleNameInput.text()
         year = self.sampleYearInput.text()
         self.fileDisplay.setPlainText('')
-        #set up the thread
+        # Set up the thread
         self.thread = QThread()
         self.searchWorker = searchWorker(sampleName,year)
         self.searchWorker.moveToThread(self.thread)
         self.thread.started.connect(self.searchWorker.search)
         self.searchWorker.finished.connect(self.thread.quit)
         self.searchWorker.finished.connect(self.searchWorker.deleteLater)
-        self.searchWorker.sample.connect(self.appendFilePath)
+        self.searchWorker.sample.connect(self.display)
         self.thread.finished.connect(self.thread.deleteLater)
         self.thread.finished.connect(self.doneSearch)
-        #start the thread
+        # Start the thread
         self.searchBtn.setText('Searching...')
         self.thread.start()
 
-
-
-    def appendFilePath(self,path):
-        self.fileDisplay.appendPlainText(path + '\n')
+    def display(self, path, id):
+        self.fileDisplay.append("<a href=" + path.replace(" ", "%20") + ">" + path + "</a>")
+        self.fileDisplay.append("<p>" + id + "</p><br>")
 
     def doneSearch(self):
         self.searchBtn.setText('Search')
@@ -90,9 +99,8 @@ class SearchUI(QWidget):
     def donePlot(self):
         self.plotBtn.setText('Plot')
 
-
-    def plot(self):
-        filepath = self.filePathInput.text()
+    def plot(self, path):
+        filepath = path.path()
         self.thread = QThread()
         self.plotWorker = plotWorker(filepath)
         self.plotWorker.moveToThread(self.thread)
