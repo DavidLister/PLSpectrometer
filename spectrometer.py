@@ -108,17 +108,17 @@ class Double():
             # Samps per chan is the number of pulses to send
             task.timing.cfg_implicit_timing(sample_mode=AcquisitionType.FINITE, samps_per_chan=pulse_count)
             task.start()
-            task.wait_until_done(timeout = math.inf) # Need to wait until done before continuing
+            task.wait_until_done(timeout = math.inf)  # Need to wait until done before continuing
         print('Done')
 
     def read(self, count_time):
         with nidaqmx.Task() as task:
-             task.ci_channels.add_ci_count_edges_chan(self.name +"/ctr0") # Start a count channel
-             task.ci_channels[0].ci_count_edges_term = '/'+self.name+'/PFI0' # Set the terminal
-             task.start() # Start counting
-             sleep(count_time) # Wait the count time
-             data = task.read() # Read the counts
-        return data/count_time # Return the average count/s
+             task.ci_channels.add_ci_count_edges_chan(self.name +"/ctr0")  # Start a count channel
+             task.ci_channels[0].ci_count_edges_term = '/'+self.name+'/PFI0'  # Set the terminal
+             task.start()  # Start counting
+             sleep(count_time)  # Wait the count time
+             data = task.read()  # Read the counts
+        return data/count_time  # Return the average count/s
 
     # Changes the stored position
     def recalibrate(self, wavelength):
@@ -214,18 +214,18 @@ class Single():
             # Samps per chan is the number of pulses to send
             task.timing.cfg_implicit_timing(sample_mode=AcquisitionType.FINITE, samps_per_chan=pulse_count)
             task.start()
-            task.wait_until_done(timeout = math.inf) # Need to wait until done before continuing
+            task.wait_until_done(timeout = math.inf)  # Need to wait until done before continuing
         print('Done')
 
     # Needs to have a read function for the scan
     def read(self, count_time):
         with nidaqmx.Task() as task:
-             task.ci_channels.add_ci_count_edges_chan(self.PMT_channel) # Start a count channel
-             task.ci_channels[0].ci_count_edges_term = self.PMT_terminal # Set the terminal
-             task.start() # Start counting
-             sleep(count_time) # Wait the count time
-             data = task.read() # Read the counts
-        return data/count_time # Return the average count/s
+             task.ci_channels.add_ci_count_edges_chan(self.PMT_channel)  # Start a count channel
+             task.ci_channels[0].ci_count_edges_term = self.PMT_terminal  # Set the terminal
+             task.start()  # Start counting
+             sleep(count_time)  # Wait the count time
+             data = task.read()  # Read the counts
+        return data/count_time  # Return the average count/s
 
     # Changes the stored position
     def recalibrate(self, wavelength):
