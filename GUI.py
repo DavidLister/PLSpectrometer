@@ -362,6 +362,7 @@ class MainWindow(qtw.QMainWindow):
     #this overwrites the close button of the UI
     def closeEvent(self,event):
         close = QMessageBox()
+        close.setWindowTitle("Confirm Exit")
         close.setText("Are you sure?")
         close.setStandardButtons(QMessageBox.Yes | QMessageBox.Cancel)
         close = close.exec()
