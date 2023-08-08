@@ -49,9 +49,9 @@ class searchWorker(QObject):
 
                     except UnicodeDecodeError:
                         continue
+                    f.close()
 
         if not found:
-            self.sample.emit('No match found')
+            self.sample.emit("", "No match found.")
 
-        f.close()
         self.finished.emit()
