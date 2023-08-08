@@ -23,7 +23,8 @@ from PyQt5.QtWidgets import (
     QScrollArea,
     QHBoxLayout,
     QProgressBar,
-    QTextBrowser
+    QTextBrowser,
+    QMessageBox
 )
 
 
@@ -74,10 +75,34 @@ class SearchUI(QWidget):
         # Get the sample name and year from the input boxes
         sampleName = self.sampleNameInput.text()
         year = self.sampleYearInput.text()
+
+        # Check if the sample name is empty
+        if not sampleName:
+            QMessageBox.information(
+                self,
+                "Missing Sample Name",
+                "Please provide a sample name.",
+                QMessageBox.Ok
+            )
+            return  # Don't proceed with the search
+
+        # Check if the year is empty (only relevant if searching the OneDrive)
+        if not year:
+            confirmation = QMessageBox.question(
+                self, 
+                'Confirm Search',
+                ("Are you sure you want to search through all the PL data files in the OneDrive? This may cause "
+                "a large number of files to be downloaded to this device. Otherwise, please cancel and provide a year."),
+                QMessageBox.Yes | QMessageBox.Cancel
+            )
+
+            if confirmation == QMessageBox.Cancel:
+                return  # Don't proceed with the search
+
         self.fileDisplay.setPlainText('')
         # Set up the thread
         self.thread = QThread()
-        self.searchWorker = searchWorker(sampleName,year)
+        self.searchWorker = searchWorker(sampleName, year)
         self.searchWorker.moveToThread(self.thread)
         self.thread.started.connect(self.searchWorker.search)
         self.searchWorker.finished.connect(self.thread.quit)
