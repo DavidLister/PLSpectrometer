@@ -42,9 +42,15 @@ class plotWorker(QObject):
             print()
             sys.exit()
 
+        # Get the file name and first line for graph title
+        file_name = file.split('\\')[-1]
+        with open(file, 'r') as f:
+            first_line = f.readline().strip()
+
+        # Import data
         data = np.genfromtxt(file, skip_header=4, delimiter = '\t')
 
-        # For creating the figures
+        # Create the figures
         fig = make_subplots(rows=2, cols=1)
 
         fig.add_trace(go.Scatter(x=data[:,0], y=data[:,1], mode='markers', name='(nm)'), row=1, col=1)
@@ -56,7 +62,7 @@ class plotWorker(QObject):
         fig.update_yaxes(title_text='Intensity (counts/s)', type="log", row=1, col=1)
         fig.update_yaxes(title_text='Intensity (counts/s)', type="log", row=2, col=1)
 
-        fig.update_layout(title_text=open(file).readline(), showlegend=False)
+        fig.update_layout(title_text=f"{file_name}<br>{first_line}", showlegend=False)
 
         fig.write_html('tmp.html', auto_open=True)
 
