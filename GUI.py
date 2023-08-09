@@ -1,7 +1,13 @@
-#THIS IS THE UI FILE IT FEEDS THE INPUTS TO THE SPECTROMETER
-#IF YOU WISH TO CHANGE THE BEHAVIOUR OF THE SPECTROMETER EDIT 'spectrometer.py'
-#IF YOU WISH TO CHANGE THE WAY DATA IS INPUTED THROUGH THE UI EDIT HERE OR USE
-#'spectrometer.ui' WITH QTDESIGNER AND COMPILE THE UI TO 'qt_designer.py'
+# GUI.py
+#
+# Main user interface (UI) file, which feeds inputs to the spectrometer
+# Edit spectrometer.py to change the spectrometer behaviour
+# Edit this file or the QtDesigner file in QtDesigner and compile to a python file to 
+# change the way the data is inputed through the UI
+# Created by Elliot Wadge
+# Edited by Alistair Bevan
+# August 2023
+#
 
 from qt_designer_new import Ui_MainWindow
 from PyQt5 import QtWidgets as qtw
@@ -18,28 +24,23 @@ from workers.optimize import optimizeWorker
 from PyQt5.QtCore import QObject, QThread, pyqtSignal
 
 
-
-
-#the main windowclass that will be made it inherits from the widget MainWindow
+# The main window class that will be made (it inherits from the widget MainWindow)
 class MainWindow(qtw.QMainWindow):
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs) #run the init mathod of the parent class (MainWindow)
-        self.ui = Ui_MainWindow() #initiate an instance of the compiled qt designer class
-        self.ui.setupUi(self) #run the setup method to create the window
-        self.connect_buttons() #connect all the buttons
-        self.make_tabs() #add the plots to the UI
-        self.double = Double('Dev2') #initialize the double spectrometer
-        self.single = Single('Dev3') #initialize the single spectrometer
+        super().__init__(*args, **kwargs)  # Run the init mathod of the parent class (MainWindow)
+        self.ui = Ui_MainWindow()  # Initiate an instance of the compiled qt designer class
+        self.ui.setupUi(self)  # Run the setup method to create the window
+        self.connect_buttons()  # Connect all the buttons
+        self.make_tabs()  # Add the plots to the UI
+        self.double = Double('Dev2')  # Initialize the double spectrometer
+        self.single = Single('Dev3')  # Initialize the single spectrometer
         self.add_optimize_bar()
-        self.ui.current_wavelength_lbl.setText('Position (nm): '+str(self.double.position))#display the current position
-        self.autoscale_lbls() #autoscale the labels so they don't cut off
-        print('done init')
+        self.ui.current_wavelength_lbl.setText('Position (nm): ' + str(self.double.position))  # Display the current position
+        self.autoscale_lbls()  # Autoscale the labels so they don't cut off
+        print('Done init')
 
-
-
-    #method for adjusting the labels so they are consistent between machines
-    #I think this might be uneccesary
+    # Method for adjusting the labels so they are consistent between machines (this might be uneccesary)
     def autoscale_lbls(self):
         self.ui.position_lbl.adjustSize()
         self.ui.current_wavelength_lbl.adjustSize()
@@ -59,28 +60,28 @@ class MainWindow(qtw.QMainWindow):
         self.ui.count_time_lbl.adjustSize()
         self.ui.spect_select_lbl.adjustSize()
 
-    # connect all the buttons to their functions
+    # Connect all the buttons to their functions
     def connect_buttons(self):
         self.ui.recalibrate_button.clicked.connect(self.recalibrate)
         self.ui.scan_button.clicked.connect(self.scan)
         self.ui.move_button.clicked.connect(self.move)
-        self.ui.radioButton.setChecked(True)#default to the double spectrometer
+        self.ui.radioButton.setChecked(True)  # Default to the double spectrometer
         self.ui.abort_button.clicked.connect(self.abort)
         self.ui.shutter_btn.clicked.connect(self.shutter)
         self.ui.radioButton.toggled.connect(self.switch_spectrometer)
         self.ui.optimize_btn.clicked.connect(self.optimize)
         self.ui.optimize_stp_btn.clicked.connect(self.abort)
 
-    #makes and positions the optimize bar
+    # Makes and positions the optimize bar
     def add_optimize_bar(self):
         self.count_display = BarChartView(self.ui.centralwidget)
-        self.count_display.setGeometry(310,810,75,130)
+        self.count_display.setGeometry(310, 810, 75, 130)
         self.count_display.refresh_stats(1030)
 
-    #constructs and positions the tabs
+    # Constructs and positions the tabs
     def make_tabs(self):
         tabs = qtw.QTabWidget(self.ui.centralwidget)
-        #first tab creation
+        # First tab creation
         self.wavelength_frame = qtw.QFrame()
         layout = qtw.QVBoxLayout()
         self.wavelength_plot = View(name = 'Wavelength')
@@ -89,7 +90,7 @@ class MainWindow(qtw.QMainWindow):
         layout.addWidget(self.wavelength_plot_log)
         self.wavelength_frame.setLayout(layout)
         tabs.addTab(self.wavelength_frame, 'Wavelength')
-        #second tab creation
+        # Second tab creation
         self.energy_frame = qtw.QFrame()
         layout = qtw.QVBoxLayout()
         self.energy_plot = View(name = 'Energy')
@@ -98,53 +99,53 @@ class MainWindow(qtw.QMainWindow):
         layout.addWidget(self.energy_plot_log)
         self.energy_frame.setLayout(layout)
         tabs.addTab(self.energy_frame, 'Energy')
-        #adding the SearchUI
+        # Third tab creation (SearchUI)
         tabs.addTab(SearchUI(),'Search')
-        #set size and shape
-        tabs.setGeometry(400,0,1000,1000)
+        # Set size and shape
+        tabs.setGeometry(400, 0, 1000, 1000)
 
-    #update the 4 plots with data
-    def update_plots(self,data):
+    # Update the 4 UI plots with data
+    def update_plots(self, data):
         wavelength = data[0]
-        counts = data[1]
-        self.wavelength_plot.refresh_stats(wavelength,counts)
-        self.wavelength_plot_log.refresh_stats(wavelength,counts)
+        counts = data[1]  # This is technically the count rate (in counts/s)
+        self.wavelength_plot.refresh_stats(wavelength, counts)
+        self.wavelength_plot_log.refresh_stats(wavelength, counts)
 
-        energy_x = 1239841.984/(1.000289*wavelength)
-        self.energy_plot.refresh_stats(energy_x,counts)
-        self.energy_plot_log.refresh_stats(energy_x,counts)
+        energy_x = 1239841.984/(1.000289*wavelength)  # Includes index of refraction correction
+        self.energy_plot.refresh_stats(energy_x, counts)
+        self.energy_plot_log.refresh_stats(energy_x, counts)
 
     def switch_spectrometer(self):
         if self.ui.radioButton.isChecked():
-            self.ui.current_wavelength_lbl.setText('Position (nm): '+str(self.double.position))
+            self.ui.current_wavelength_lbl.setText('Position (nm): ' + str(self.double.position))
             self.autoscale_lbls()
         else:
-            self.ui.current_wavelength_lbl.setText('Position (nm): '+str(self.single.position))
+            self.ui.current_wavelength_lbl.setText('Position (nm): ' + str(self.single.position))
             self.autoscale_lbls()
 
-    #update the spectrometer position and display
-    def update_position_dbl(self,position):
+    # Update the spectrometer position and display (double)
+    def update_position_dbl(self, position):
         position = round(position, 3)
         self.double.position = position
-        if self.ui.radioButton.isChecked():#only update the display with double if double is selected
+        if self.ui.radioButton.isChecked():  # Only update the display with double if double is selected
             current = self.ui.current_wavelength_lbl.text()
             keep = current[:current.find(':')+2]
             new_string = keep + str(position)
             self.ui.current_wavelength_lbl.setText(new_string)
             self.ui.current_wavelength_lbl.adjustSize()
 
-    #update the spectrometer position and display
-    def update_position_sngl(self,position):
+    # Update the spectrometer position and display (single)
+    def update_position_sngl(self, position):
         position = round(position, 3)
         self.single.position = position
-        if not self.ui.radioButton.isChecked():#only update the display with double if single is selected
+        if not self.ui.radioButton.isChecked():  # Only update the display with single if single is selected
             current = self.ui.current_wavelength_lbl.text()
             keep = current[:current.find(':')+2]
             new_string = keep + str(position)
             self.ui.current_wavelength_lbl.setText(new_string)
             self.ui.current_wavelength_lbl.adjustSize()
 
-    #changes the status displayed in the top left corner
+    # Changes the status displayed in the top left corner
     def change_status(self, status = 'Idle'):
         self.ui.status_lbl.setText('Status: ' + status)
 
