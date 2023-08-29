@@ -21,6 +21,7 @@ from searchUI import SearchUI
 from workers.move import moveWorker
 from workers.scan import scanWorker
 from workers.optimize import optimizeWorker
+from workers.temperature import TemperatureSensor
 from PyQt5.QtCore import QObject, QThread, pyqtSignal
 
 
@@ -33,6 +34,7 @@ class MainWindow(qtw.QMainWindow):
         self.ui.setupUi(self)  # Run the setup method to create the window
         self.connect_buttons()  # Connect all the buttons
         self.make_tabs()  # Add the plots to the UI
+        self.temperature_sensor = TemperatureSensor('Dev1')  # Initialize the temperature sensor
         self.double = Double('Dev2')  # Initialize the double spectrometer
         self.single = Single('Dev3')  # Initialize the single spectrometer
         self.add_optimize_bar()  # Add optimize bar graph to the UI
