@@ -16,9 +16,10 @@ from miscellaneous import therm_res_calc_ohms, temp_calc_K
 
 # Create a class for temperature sensor
 class TemperatureSensor:
-    temperature = pyqtSignal(float)
-
     def __init__(self, device):
+        self.device = device
+        self.name = device
+        
         super().__init__()
         try:
             with nidaqmx.Task() as task_check:
@@ -31,21 +32,21 @@ class TemperatureSensor:
             QMessageBox.critical(self, "Error", error_message, QMessageBox.Ok)
             return
         
-        self.name = device
 
     # Function for measuring temperature
     def read_temperature(self):
         try:
-            with nidaqmx.Task() as task_check:
-                task_check.ai_channels.add_ai_voltage_chan('Dev1/ai0', terminal_config=TerminalConfiguration.RSE, min_val=0, max_val=5)
+            with nidaqmx.Task() as task_read:
+                task_read.ai_channels.add_ai_voltage_chan('Dev1/ai0', terminal_config=TerminalConfiguration.RSE, min_val=0, max_val=5)
         except:
             print(f'Temperature DAQ device not detected or configured properly.')
+            average_temperature = "N/A"
             return
 
-        with nidaqmx.Task() as task_write, nidaqmx.Task() as task_read:
+        with nidaqmx.Task() as task_write:
             task_write.ao_channels.add_ao_voltage_chan('Dev1/ao0', 'mychannel', min_val=0, max_val=5.0)
-            task_read.ai_channels.add_ai_voltage_chan('Dev1/ai0', terminal_config=TerminalConfiguration.RSE, min_val=0, max_val=5)
             task_write.write(5.0)
+
             temperature_sum = 0.0
             num_measurements = 0
 
@@ -60,8 +61,7 @@ class TemperatureSensor:
                 num_measurements += 1
 
                 # Sleep for a short duration between measurements
-                time.sleep(0.085)
+                time.sleep(0.05)
 
-            # Calculate the average temperature and emit value
+            # Calculate the average temperature
             average_temperature = temperature_sum / num_measurements
-            self.temperature.emit(average_temperature)
