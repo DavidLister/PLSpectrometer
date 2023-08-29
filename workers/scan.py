@@ -104,7 +104,7 @@ class scanWorker(QObject):
 
             counts = self.spectrometer.read(self.time)
             self.data.emit([self.spectrometer.position, counts])  # Send data to be plotted
-            print(counts)
+            print(f"{counts} counts/s")
             # Opening and closing in loop means in case of a crash we keep the data
             f = open(self.filename, 'a')
             f.write(str(self.spectrometer.position) + '\t' + str(counts) + '\n')
