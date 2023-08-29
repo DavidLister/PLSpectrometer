@@ -25,11 +25,9 @@ class TemperatureSensor:
             with nidaqmx.Task() as task_check:
                 task_check.ai_channels.add_ai_voltage_chan('Dev1/ai0', terminal_config=TerminalConfiguration.RSE, min_val=0, max_val=5)
 
-        except nidaqmx.errors.DaqError as e:
+        except:
             print(f'The device or channel name you entered for {device} may be incorrect or you may have an unclosed window running')
             print(f'You will be unable to send commands to this daq: {device}\n')
-            error_message = "Temperature DAQ device not detected or configured properly."
-            QMessageBox.critical(self, "Error", error_message, QMessageBox.Ok)
             return
         
 
