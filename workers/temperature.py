@@ -43,8 +43,9 @@ class TemperatureSensor:
             average_temperature = "N/A"
             return
 
-        with nidaqmx.Task() as task_write:
+        with nidaqmx.Task() as task_write, nidaqmx.Task() as task_read:
             task_write.ao_channels.add_ao_voltage_chan('Dev1/ao0', 'mychannel', min_val=0, max_val=5.0)
+            task_read.ai_channels.add_ai_voltage_chan('Dev1/ai0', terminal_config=TerminalConfiguration.RSE, min_val=0, max_val=5)
             task_write.write(5.0)
 
             temperature_sum = 0.0
