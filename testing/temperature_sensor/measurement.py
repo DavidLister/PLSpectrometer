@@ -27,7 +27,7 @@ class MeasurementThread(QThread):
         self.voltage_data = []  # Initialize resistor voltage data as an instance variable
 
     def run(self):
-        filename = f"C:/Users/trexb/Documents/Temperature Sensor/Data/{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
+        filename = f"C:/Users/mocvd/Documents/Temperature Sensor/Data/{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
         header = "Elapsed Time (s)\tTemperature (°C)\tAverage Temperature (°C)\n"
         start_time = datetime.datetime.now()
 
