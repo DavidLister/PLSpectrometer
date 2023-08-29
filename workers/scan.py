@@ -109,7 +109,7 @@ class scanWorker(QObject):
             
             temperature_sensor = TemperatureSensor("Dev1")
             temperature = temperature_sensor.read_temperature()
-            print(f"{temperature}")
+            print(f"{temperature} degrees C")
 
             # Opening and closing in loop means in case of a crash we keep the data
             f = open(self.filename, 'a')

@@ -62,5 +62,5 @@ class TemperatureSensor:
                 time.sleep(0.05)
 
             # Calculate the average temperature
-            average_temperature = temperature_sum / num_measurements
+            average_temperature = round(temperature_sum / num_measurements, 2)
             return average_temperature  # Return the calculated average temperature
