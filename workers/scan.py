@@ -9,7 +9,7 @@
 import time
 from PyQt5.QtCore import QObject, QThread, pyqtSignal
 from miscellaneous import available_name, make_header
-from temperature import TemperatureSensor
+from workers.temperature import TemperatureSensor
 from datetime import datetime
 import os
 
