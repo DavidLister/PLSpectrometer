@@ -28,19 +28,19 @@ from PyQt5.QtCore import QObject, QThread, pyqtSignal
 class MainWindow(qtw.QMainWindow):
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)  # Run the init mathod of the parent class (MainWindow)
+        super().__init__(*args, **kwargs)  # Run the init method of the parent class (MainWindow)
         self.ui = Ui_MainWindow()  # Initiate an instance of the compiled qt designer class
         self.ui.setupUi(self)  # Run the setup method to create the window
         self.connect_buttons()  # Connect all the buttons
         self.make_tabs()  # Add the plots to the UI
         self.double = Double('Dev2')  # Initialize the double spectrometer
         self.single = Single('Dev3')  # Initialize the single spectrometer
-        self.add_optimize_bar()
+        self.add_optimize_bar()  # Add optimize bar graph to the UI
         self.ui.current_wavelength_lbl.setText('Position (nm): ' + str(self.double.position))  # Display the current position
         self.autoscale_lbls()  # Autoscale the labels so they don't cut off
         print('Done init')
 
-    # Method for adjusting the labels so they are consistent between machines (this might be uneccesary)
+    # Method for adjusting the labels so they are consistent between machines (this might be unnecessary)
     def autoscale_lbls(self):
         self.ui.position_lbl.adjustSize()
         self.ui.current_wavelength_lbl.adjustSize()
@@ -111,7 +111,7 @@ class MainWindow(qtw.QMainWindow):
         self.wavelength_plot.refresh_stats(wavelength, counts)
         self.wavelength_plot_log.refresh_stats(wavelength, counts)
 
-        energy_x = 1239841.984/(1.000289*wavelength)  # Includes index of refraction correction
+        energy_x = 1239841.984/(1.000289*wavelength)  # In meV and includes index of refraction correction (1.000289)
         self.energy_plot.refresh_stats(energy_x, counts)
         self.energy_plot_log.refresh_stats(energy_x, counts)
 
@@ -149,8 +149,8 @@ class MainWindow(qtw.QMainWindow):
     def change_status(self, status = 'Idle'):
         self.ui.status_lbl.setText('Status: ' + status)
 
-    #function that sets the buttons to enabled, to be called after
-    #a scan or a move (connected to the finished of the Thread)
+    # Sets buttons to enabled, which is called after
+    # a scan or a move (connected to the finished of the Thread)
     def enable_buttons(self):
         self.ui.recalibrate_button.setEnabled(True)
         self.ui.move_button.setEnabled(True)
@@ -158,7 +158,7 @@ class MainWindow(qtw.QMainWindow):
         self.ui.optimize_btn.setEnabled(True)
         self.ui.optimize_stp_btn.setEnabled(True)
 
-    #disable buttons
+    # Sets buttons to disabled
     def disable_buttons(self):
         self.ui.recalibrate_button.setEnabled(False)
         self.ui.move_button.setEnabled(False)
@@ -166,7 +166,7 @@ class MainWindow(qtw.QMainWindow):
         self.ui.optimize_btn.setEnabled(False)
         self.ui.optimize_stp_btn.setEnabled(False)
 
-    #shutter function
+    # Open and closes double spectrometer shutter
     def shutter(self):
         if self.ui.shutter_btn.isChecked():
             self.double.close_shutter()
@@ -175,137 +175,136 @@ class MainWindow(qtw.QMainWindow):
             self.double.open_shutter()
             self.ui.shutter_btn.setText('Shutter Opened')
 
-    #repeats the scan if repeat is checked
+    # Repeats the scan if repeat is checked
     def check_repeat(self):
         if self.ui.repeat_btn.isChecked():
             self.scan()
 
     def scan(self):
+        # Step 1: Read data from the input boxes
         try:
-            #read data from the input boxes
             start = float(self.ui.scan_start_input.text())
             end = float(self.ui.scan_end_input.text())
             step_input = float(self.ui.scan_step_input.text())
-            step = round(step_input, 3) # Rounded to 0.001 nm to avoid systematic rounding error with pulse counts
+            step = round(step_input, 3)  # Rounded to 0.001 nm to avoid systematic rounding error with pulse counts
             time = float(self.ui.count_time_input.text())
             filename = self.ui.file_name_input.text()
             sample_id = self.ui.sample_ID_input.text()
         except:
-            print('scan did not recieve valid inputs')
+            print('Scan did not recieve valid inputs')
             return
 
-
-
-
-        #set the range and clear the data from plots
-        self.wavelength_plot.set_xlim(start,end)
-        self.wavelength_plot_log.set_xlim(start,end)
-        energy_start = 1239841.984/(1.000289 * end)
+        # Step 2: Set the range and clear the data from plots
+        self.wavelength_plot.set_xlim(start, end)
+        self.wavelength_plot_log.set_xlim(start, end)
+        energy_start = 1239841.984/(1.000289 * end)  # In meV and includes index of refraction correction (1.000289)
         energy_end = 1239841.984/(1.000289 * start)
         print(energy_start)
         print(energy_end)
-        self.energy_plot.set_xlim(energy_start,energy_end)
-        self.energy_plot_log.set_xlim(energy_start,energy_end)
+        self.energy_plot.set_xlim(energy_start, energy_end)
+        self.energy_plot_log.set_xlim(energy_start, energy_end)
         self.wavelength_plot.cla()
         self.energy_plot.cla()
         self.wavelength_plot_log.cla()
         self.energy_plot_log.cla()
 
-        # Step 2: Create a QThread object
+        # Step 3: Create a QThread object
         self.scan_thread = QThread()
-        # Step 3: Create a worker object
-        if self.ui.radioButton.isChecked():#if we have double selected
-            if abs(end - self.double.position) > 100:#safety measure
+
+        # Step 4: Create a worker object
+        if self.ui.radioButton.isChecked():  # If double is selected
+            if abs(end - self.double.position) > 100:  # Safety measure
                 intent = self.check_intent()
                 if not intent:
                     return
-            self.worker = scanWorker(self.double,start,end,step,time,filename,sample_id)#input double
+            self.worker = scanWorker(self.double, start, end, step, time, filename, sample_id)  # Input double
             self.worker.position.connect(self.update_position_dbl)
 
-
-        else:#if single is selected
+        else:  # If single is selected
             if abs(end - self.single.position) > 100:
                 intent = self.check_intent()
                 if not intent:
                     return
-            self.worker = scanWorker(self.single,start,end,step,time,filename,sample_id)#input single
+            self.worker = scanWorker(self.single, start, end, step, time, filename, sample_id)  # Input single
             self.worker.position.connect(self.update_position_sngl)
 
-        #disable the buttons to prevent crashing
-        self.disable_buttons()
+        self.disable_buttons()  # Disable the buttons to prevent crashing
         self.change_status('Scanning')
 
-        # # Step 4: Move worker to the thread
-        self.worker.moveToThread(self.scan_thread)#this makes the scan_thread methos be executed by the thread
-        # # Step 5: Connect signals and slots
-        self.scan_thread.started.connect(self.worker.scan)#connect to the scan method
-        self.worker.data.connect(self.update_plots)#update the plots as we take data
-        self.worker.finished.connect(self.scan_thread.quit)#quit when done
-        self.worker.finished.connect(self.worker.deleteLater)#delete when done
-        self.worker.finished.connect(self.enable_buttons)#enable buttons when done
+        # # Step 5: Move worker to the thread
+        self.worker.moveToThread(self.scan_thread)  # This makes the scan_thread method be executed by the thread
+
+        # # Step 6: Connect signals and slots
+        self.scan_thread.started.connect(self.worker.scan)  # Connect to the scan method
+        self.worker.data.connect(self.update_plots)  # Update the plots as we take data
+        self.worker.finished.connect(self.scan_thread.quit)  # Quit when done
+        self.worker.finished.connect(self.worker.deleteLater)  # Delete when done
+        self.worker.finished.connect(self.enable_buttons)  # Enable buttons when done
         self.worker.finished.connect(self.change_status)
-        self.scan_thread.finished.connect(self.scan_thread.deleteLater)#delete the thread when done
+        self.scan_thread.finished.connect(self.scan_thread.deleteLater)  # Delete the thread when done
         self.scan_thread.finished.connect(self.check_repeat)
 
-
-        #start the thread
+        # Start the thread
         self.scan_thread.start()
 
-
-
     def move(self):
+        # Step 1: Read data from the input box
         try:
             destination = float(self.ui.move_input.text())
         except:
             print('move recieved invalid input')
             return
 
-        print('starting move to',destination)
+        print('starting move to', destination)
 
         # Step 2: Create a QThread object
         self.thread = QThread()
+
         # Step 3: Create a worker object
-        if self.ui.radioButton.isChecked():#if we have double selected
-            if abs(destination - self.double.position) > 100:#safety measure
+        if self.ui.radioButton.isChecked():  # If double is selected
+            if abs(destination - self.double.position) > 100:  # Safety measure
                 intent = self.check_intent()
                 if not intent:
                     return
-            self.worker = moveWorker(self.double,destination)#input double
+            self.worker = moveWorker(self.double,destination)  # Input double
             self.worker.position.connect(self.update_position_dbl)
 
-        else:#if single is selected
+        else:  # If single is selected
             if abs(destination - self.single.position) > 100:
                 intent = self.check_intent()
                 if not intent:
                     return
-            self.worker = moveWorker(self.single,destination)#input single
+            self.worker = moveWorker(self.single,destination)  # Input single
             self.worker.position.connect(self.update_position_sngl)
 
-        #disable the buttons to prevent crashing
-        self.disable_buttons()
+        self.disable_buttons()  # Disable the buttons to prevent crashing
         self.change_status('Moving')
-        # # Step 4: Move worker to the thread
+
+        # Step 4: Move worker to the thread
         self.worker.moveToThread(self.thread)
-        # # Step 5: Connect signals and slots see scan fordetailed documentation
+
+        # Step 5: Connect signals and slots (see scan for detailed documentation)
         self.thread.started.connect(self.worker.move)
         self.worker.finished.connect(self.thread.quit)
         self.worker.finished.connect(self.worker.deleteLater)
         self.worker.finished.connect(self.enable_buttons)
         self.worker.finished.connect(self.change_status)
         self.thread.finished.connect(self.thread.deleteLater)
+
         # # Step 6: Start the thread
         self.thread.start()
 
     def optimize(self):
-
+        # Step 1: Create a QThread object
         self.thread = QThread()
-        self.worker = optimizeWorker(self.double)#input single
-        #disable the buttons to prevent crashing
-        self.disable_buttons()
+        self.worker = optimizeWorker(self.double)  # Input double
+        self.disable_buttons()  # Disable the buttons to prevent crashing
         self.ui.optimize_stp_btn.setEnabled(True)
-        # # Step 4: Move worker to the thread
+
+        # Step 2: Move worker to the thread
         self.worker.moveToThread(self.thread)
-        # # Step 5: Connect signals and slots see scan fordetailed documentation
+
+        # Step 3: Connect signals and slots (see scan for detailed documentation)
         self.thread.started.connect(self.worker.optimize)
         self.worker.finished.connect(self.thread.quit)
         self.worker.finished.connect(self.worker.deleteLater)
@@ -313,10 +312,12 @@ class MainWindow(qtw.QMainWindow):
         self.worker.finished.connect(self.change_status)
         self.thread.finished.connect(self.thread.deleteLater)
         self.worker.bar_update.connect(self.count_display.refresh_stats)
-        # # Step 6: Start the thread
+
+        # Step 6: Start the thread
         self.thread.start()
 
-    def recalibrate(self):
+    def recalibrate(self):  # Includes calculation for determining difference between expected ("literature") and actual position
+        # Check for valid inputs
         try:
             literature = float(self.ui.literature_value_input.text())
             measured = float(self.ui.measured_value_input.text())
@@ -324,7 +325,7 @@ class MainWindow(qtw.QMainWindow):
             offset = round(measured - literature, 3)
             corrected_position = round(current_position - offset, 3)
         except:
-            print('the recalibrate input was invalid')
+            print('The recalibrate input was invalid')
             error_message = "Recalibration cannot be performed due to invalid inputs. Please ensure there are numbers in each of the three input boxes."
             QMessageBox.critical(self, "Error", error_message, QMessageBox.Ok)
             return
@@ -334,23 +335,25 @@ class MainWindow(qtw.QMainWindow):
         else:
             self.single.recalibrate(corrected_position)
 
+        # Update offset and new position labels
         self.ui.offset_lbl.setText("Offset (nm): " + f"{offset}")
         self.ui.corrected_lbl.setText("Position After Correction (nm): " + f"{corrected_position}")
         self.ui.offset_lbl.adjustSize()
         self.ui.corrected_lbl.adjustSize()
 
+        # Update current wavelength label
         current = self.ui.current_wavelength_lbl.text()
         keep = current[:current.find(':')+2]
         new_string = keep + str(corrected_position)
         self.ui.current_wavelength_lbl.setText(new_string)
         self.ui.current_wavelength_lbl.adjustSize()
 
-        print('succesfully recalibrated')
+        print('Succesfully recalibrated')
 
-    #the message box that pops up when requestion a move of over 100
+    # Message box that pops up when requestion a move of over 100
     def check_intent(self):
         check = QMessageBox()
-        check.setText("you have requested to move over 100nm is this correct")
+        check.setText("You have requested to move over 100 nm. Is this correct?")
         check.setStandardButtons(QMessageBox.Yes | QMessageBox.Cancel)
         check.setIcon(QMessageBox.Warning)
         check = check.exec()
@@ -360,7 +363,7 @@ class MainWindow(qtw.QMainWindow):
         else:
             return False
 
-    #this overwrites the close button of the UI
+    # This overwrites the close button of the UI
     def closeEvent(self,event):
         close = QMessageBox()
         close.setWindowTitle("Confirm Exit")
@@ -369,7 +372,7 @@ class MainWindow(qtw.QMainWindow):
         close = close.exec()
 
         if close == QMessageBox.Yes:
-            #do the close procedure
+            # Do the close procedure
             self.double.save()
             self.single.save()
             self.double.close_channels()
@@ -380,17 +383,16 @@ class MainWindow(qtw.QMainWindow):
 
 
     def abort(self):
-        #changes the abort flag inside the worker to be true which will trigger
-        #abort on next scan step, cannot currently abort a move
+        # Changes the abort flag inside the worker to be true which will trigger
+        # abort on next scan step (cannot currently abort a move)
         self.worker.abort = True
 
 
 
-
-#run the UI
+# Run the UI
 if __name__ == '__main__':
     import sys
-    app = qtw.QApplication(sys.argv) #makes the app
-    win = MainWindow() #make our UI
-    win.show() #display our UI
-    sys.exit(app.exec_()) #executes the app
+    app = qtw.QApplication(sys.argv)  # Makes the app
+    win = MainWindow()  # Makes our UI
+    win.show()  # Displays our UI
+    sys.exit(app.exec_())  # Executes the app
