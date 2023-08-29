@@ -107,6 +107,7 @@ class scanWorker(QObject):
             self.data.emit([self.spectrometer.position, counts])  # Send data to be plotted
             print(f"{counts} counts/s")
 
+            temperature_sensor = TemperatureSensor("Dev1")
             temperature = self.temperature_sensor.read_temperature()
             print(f"{temperature}")
 
