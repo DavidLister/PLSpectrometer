@@ -37,9 +37,8 @@ class TemperatureSensor:
             with nidaqmx.Task() as task_read:
                 task_read.ai_channels.add_ai_voltage_chan('Dev1/ai0', terminal_config=TerminalConfiguration.RSE, min_val=0, max_val=5)
         except:
-            print(f'Temperature DAQ device not detected or configured properly.')
             average_temperature = "N/A"
-            return
+            return average_temperature
 
         with nidaqmx.Task() as task_write, nidaqmx.Task() as task_read:
             task_write.ao_channels.add_ao_voltage_chan('Dev1/ao0', 'mychannel', min_val=0, max_val=5.0)
@@ -64,3 +63,4 @@ class TemperatureSensor:
 
             # Calculate the average temperature
             average_temperature = temperature_sum / num_measurements
+            return average_temperature  # Return the calculated average temperature
