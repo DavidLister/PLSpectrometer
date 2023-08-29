@@ -9,6 +9,7 @@
 import time
 from PyQt5.QtCore import QObject, QThread, pyqtSignal
 from miscellaneous import available_name, make_header
+from temperature import TemperatureSensor
 from datetime import datetime
 import os
 
@@ -105,9 +106,13 @@ class scanWorker(QObject):
             counts = self.spectrometer.read(self.time)
             self.data.emit([self.spectrometer.position, counts])  # Send data to be plotted
             print(f"{counts} counts/s")
+
+            temperature = self.temperature_sensor.read_temperature()
+            print(f"{temperature}")
+
             # Opening and closing in loop means in case of a crash we keep the data
             f = open(self.filename, 'a')
-            f.write(str(self.spectrometer.position) + '\t' + str(counts) + '\n')
+            f.write(str(self.spectrometer.position) + '\t' + str(counts) + '\t' + str(temperature) + '\n')
             f.close()
 
         self.finished.emit()  # Emit that we're done
