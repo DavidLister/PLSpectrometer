@@ -1,6 +1,6 @@
 # miscellaneous.py
 #
-# Defines functions for sleep, checking file names, and making headers for files
+# Defines functions for sleep, checking file names, making headers for files and calculating temperature
 # Created by Elliot Wadge
 # Edited by Alistair Bevan
 # June 2023
@@ -9,6 +9,7 @@
 import os
 import time
 from datetime import datetime
+import numpy as np
 
 
 # High precision sleep function (from testing on syzygy, accurate to about 1e-6)
@@ -64,3 +65,24 @@ def find_minimum(xdata, ydata, cmpr_x, cmpr_y):
             minimum = distance
             min_i = i
     return min_i  # Returns the index that this happens at (not the value)
+
+
+# Define equations for determining thermistor resistance and temperature
+
+# Set known values
+output_voltage_V = 5
+resistor_resistance_ohms = 4700
+resistance_ref_ohms = 8500
+
+# Precompute constant terms
+ABCD = [3.354016E-03, 2.569850E-04, 2.620131E-06, 6.383091E-08] # for ordered thermistor
+
+# Vectorized function for determining resistance of thermistor
+def therm_res_calc_ohms(thermistor_voltage_V):
+    return (resistor_resistance_ohms * thermistor_voltage_V) / (output_voltage_V - thermistor_voltage_V)
+
+# Vectorized function for determining temperature
+def temp_calc_K(resistance_ohms):
+    return (ABCD[0] + ABCD[1] * np.log(resistance_ohms / resistance_ref_ohms) +
+            ABCD[2] * (np.log(resistance_ohms / resistance_ref_ohms))**2 +
+            ABCD[3] * (np.log(resistance_ohms / resistance_ref_ohms))**3)**(-1) - 273.15
