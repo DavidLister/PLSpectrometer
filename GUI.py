@@ -252,12 +252,13 @@ class MainWindow(qtw.QMainWindow):
     def move(self):
         # Step 1: Read data from the input box
         try:
-            destination = float(self.ui.move_input.text())
+            destination_input = float(self.ui.move_input.text())
+            destination = round(destination_input, 3)
         except:
-            print('move recieved invalid input')
+            print('Move recieved invalid input')
             return
 
-        print('starting move to', destination)
+        print('Starting move to', destination)
 
         # Step 2: Create a QThread object
         self.thread = QThread()
