@@ -319,13 +319,16 @@ class MainWindow(qtw.QMainWindow):
         # Step 6: Start the thread
         self.thread.start()
 
-    def recalibrate(self):  # Includes calculation for determining difference between expected ("literature") and actual position
+    def recalibrate(self):  # Includes calculation for determining difference between expected and actual position
         # Check for valid inputs
         try:
-            literature = float(self.ui.literature_value_input.text())
+            expected = float(self.ui.literature_value_input.text())
             measured = float(self.ui.measured_value_input.text())
-            current_position = float(self.ui.current_position_input.text())
-            offset = round(measured - literature, 3)
+            if self.ui.radioButton.isChecked():
+                current_position = self.double.position
+            else:
+                current_position = self.single.position
+            offset = round(measured - expected, 3)
             corrected_position = round(current_position - offset, 3)
         except:
             print('The recalibrate input was invalid')
