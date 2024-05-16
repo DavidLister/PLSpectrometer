@@ -48,7 +48,6 @@ class MainWindow(qtw.QMainWindow):
         self.ui.current_wavelength_lbl.adjustSize()
         self.ui.literature_value_lbl.adjustSize()
         self.ui.measured_value_lbl.adjustSize()
-        self.ui.current_position_lbl.adjustSize()
         self.ui.offset_lbl.adjustSize()
         self.ui.corrected_lbl.adjustSize()
         self.ui.move_spectrometer_lbl.adjustSize()
