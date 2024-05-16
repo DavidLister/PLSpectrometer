@@ -23,7 +23,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>960</y>
+      <y>910</y>
       <width>101</width>
       <height>51</height>
      </rect>
@@ -214,7 +214,7 @@
       <x>10</x>
       <y>230</y>
       <width>381</width>
-      <height>171</height>
+      <height>121</height>
      </rect>
     </property>
     <property name="frameShape">
@@ -266,7 +266,7 @@
      <property name="geometry">
       <rect>
        <x>270</x>
-       <y>110</y>
+       <y>60</y>
        <width>101</width>
        <height>51</height>
       </rect>
@@ -358,7 +358,7 @@ QPushButton::pressed{
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>110</y>
+       <y>60</y>
        <width>151</width>
        <height>16</height>
       </rect>
@@ -378,7 +378,7 @@ QPushButton::pressed{
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>140</y>
+       <y>90</y>
        <width>251</width>
        <height>16</height>
       </rect>
@@ -394,48 +394,12 @@ QPushButton::pressed{
       <string>Position After Correction (nm):</string>
      </property>
     </widget>
-    <widget class="QLabel" name="current_position_lbl">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>60</y>
-       <width>241</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-       <weight>50</weight>
-       <bold>false</bold>
-      </font>
-     </property>
-     <property name="text">
-      <string>Position Before Correction (nm)</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="current_position_input">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>80</y>
-       <width>113</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color: rgb(255, 255, 255);</string>
-     </property>
-     <property name="inputMethodHints">
-      <set>Qt::ImhDigitsOnly</set>
-     </property>
-    </widget>
    </widget>
    <widget class="QFrame" name="frame3">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>440</y>
+      <y>390</y>
       <width>381</width>
       <height>71</height>
      </rect>
@@ -552,7 +516,7 @@ QPushButton::pressed{
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>550</y>
+      <y>500</y>
       <width>381</width>
       <height>211</height>
      </rect>
@@ -850,7 +814,7 @@ QPushButton::pressed{
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>520</y>
+      <y>470</y>
       <width>211</width>
       <height>21</height>
      </rect>
@@ -870,7 +834,7 @@ QPushButton::pressed{
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>410</y>
+      <y>360</y>
       <width>181</width>
       <height>21</height>
      </rect>
@@ -930,7 +894,7 @@ QPushButton::pressed{
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>800</y>
+      <y>750</y>
       <width>381</width>
       <height>151</height>
      </rect>
@@ -1057,7 +1021,7 @@ QPushButton::pressed{
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>770</y>
+      <y>720</y>
       <width>91</width>
       <height>21</height>
      </rect>
@@ -1080,7 +1044,7 @@ QPushButton::pressed{
      <x>0</x>
      <y>0</y>
      <width>1641</width>
-     <height>26</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
