@@ -23,7 +23,7 @@ class searchWorker(QObject):
     def search(self):
         home_dir = os.path.expanduser('~')  # This is just C:\Users\user-name
         # absolute = os.path.join(home_dir, 'Documents', 'PL', 'Data')  # Searches in documents
-        absolute = os.path.join(home_dir, 'Simon Fraser University (1sfu)', 'Simon Watkins - MOCVD-LAB', 'data', 'ZnO', 'PL', 'Data')  # Searches in OneDrive
+        absolute = os.path.join(home_dir, 'Simon Fraser University (1sfu)', 'Simon Watkins - MOCVD-LAB', 'data', '07-PL')  # Searches in OneDrive
 
         if self.name == '':
             self.finished.emit()
