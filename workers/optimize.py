@@ -25,11 +25,12 @@ class optimizeWorker(QObject):
         self.player = qtmm.QMediaPlayer()
         # If you're not hearing sound print the url value and make sure it's what you expect
         # This file is a tone that goes from 800Hz to 400Hz over 60 seconds
-        url = qtc.QUrl(qtc.QDir.currentPath()+'/Documents/PLSpectrometer/workers/chirp.wav')
-        print(url)
+        url = qtc.QUrl(qtc.QDir.currentPath() + '/workers/chirp.wav')
+        print(f"File path is {url}\nCheck ^^ this if the program doesn't work.")
         self.player.setVolume(70)
         self.set_file(url)
         self.spectrometer = spectrometer
+        print("Done init")
 
     # Set the target file for our audio
     def set_file(self, url):
@@ -52,13 +53,14 @@ class optimizeWorker(QObject):
         print("Starting optimize")
         # Keep running until abort is hit
         while not self.abort:
+            print("Loop!")
             # Set the play position in the file in order to change the tone
             playStart = int(60*1000*(rate/maximum))  # Higher rate equals higher frequency
             self.player.setPosition(playStart)
             self.player.play()
             rate = self.spectrometer.read(interval)  # Reads the counts in the interval (note that spectrometer.read converts to counts/s)
             rate_ma = int(rate*rate_IIR_factor + rate_ma*(1 - rate_IIR_factor))  # Takes a moving average
-            print(rate_ma)
+            print(f"Rate: {rate_ma}")
             self.player.pause()
             self.bar_update.emit(rate_ma)  # Update the displayed value
             # Update the scale of our sound
