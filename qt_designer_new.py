@@ -464,7 +464,7 @@ class Ui_MainWindow(object):
         self.radioButton.setText(_translate("MainWindow", "double"))
         self.radioButton_2.setText(_translate("MainWindow", "single"))
         self.spect_select_lbl_2.setText(_translate("MainWindow", "Pulse Frequency (Hz): 2000 "))
-        self.measured_value_lbl.setText(_translate("MainWindow", "Measured Value (nm)"))
+        self.measured_value_lbl.setText(_translate("MainWindow", "Spectrometer's Value (nm)"))
         self.recalibrate_button.setText(_translate("MainWindow", "Recalibrate"))
         self.literature_value_lbl.setText(_translate("MainWindow", "Expected Value (nm)"))
         self.literature_value_input.setText(_translate("MainWindow", "365.016"))
